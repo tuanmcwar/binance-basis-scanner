@@ -40,12 +40,18 @@ export function scanBasis(symbols, marketData) {
     results.push({
       symbol,
       side,
+
       futuresPrice,
       futuresPriceText: futures.priceText,
+
       indexPrice,
       indexPriceText: index.priceText,
+
       basis,
-      basisRate
+      basisRate,
+
+      // Funding Rate từ Binance premiumIndex
+      fundingRate: index.fundingRate ?? null
     });
   }
 
@@ -58,4 +64,3 @@ export function scanBasis(symbols, marketData) {
 
   return results;
 }
-

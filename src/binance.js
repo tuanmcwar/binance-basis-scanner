@@ -24,7 +24,7 @@ export async function getMarketData() {
   // Giá giao dịch Futures gần nhất
   const futuresRequest = api.get('/fapi/v1/ticker/price');
 
-  // Index Price của các hợp đồng
+  // Index Price và Funding Rate
   const indexRequest = api.get('/fapi/v1/premiumIndex');
 
   const [futuresResponse, indexResponse] =
@@ -51,9 +51,24 @@ export async function getMarketData() {
     const price = Number(item.indexPrice);
 
     if (Number.isFinite(price) && price > 0) {
+      const rawFunding = item.lastFundingRate;
+
+      const fundingRate =
+        rawFunding != null &&
+        rawFunding !== '' &&
+        Number.isFinite(Number(rawFunding))
+          ? Number(rawFunding) * 100
+          : null;
+
       indexMap.set(item.symbol, {
         price,
-        priceText: item.indexPrice
+        priceText: item.indexPrice,
+
+        // Funding Rate tính theo %
+        fundingRate,
+
+        // Giá trị gốc từ Binance
+        fundingRateText: rawFunding ?? null
       });
     }
   }
@@ -63,4 +78,3 @@ export async function getMarketData() {
     indexMap
   };
 }
-
