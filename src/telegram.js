@@ -13,15 +13,19 @@ const vnTime = () =>
     hour12: false
   });
 
-
 export async function sendToTelegram(item) {
   const positive = item.side === 'POSITIVE';
 
-  const coin = `${item.symbol}.P`;
+  const cleanSymbol = String(item.symbol)
+    .replace(/\.P$/i, '')
+    .toUpperCase();
+
+  const coin = `${cleanSymbol}.P`;
   const priceText = String(item.futuresPriceText);
+
   const conclusion = positive
-  ? `🟢 KẾT LUẬN: Giá Futures đang cao hơn Index ${format(Math.abs(item.basisRate), 4)}%.`
-  : `🔴 KẾT LUẬN: Giá Futures đang thấp hơn Index ${format(Math.abs(item.basisRate), 4)}%.`;
+    ? `🟢 KẾT LUẬN: Giá Futures đang cao hơn Index ${format(Math.abs(item.basisRate), 4)}%.`
+    : `🔴 KẾT LUẬN: Giá Futures đang thấp hơn Index ${format(Math.abs(item.basisRate), 4)}%.`;
 
   const chart =
     `https://www.coinglass.com/tv/vi/Binance_${coin}`;
@@ -41,11 +45,10 @@ export async function sendToTelegram(item) {
     `📍 Index Price: ${item.indexPriceText}`,
     `📉 Basis: ${item.basis > 0 ? '+' : ''}${format(item.basis, 12)}`,
     '',
-    
-`🕒 Thời gian quét: ${vnTime()} (VN)`,
-'',
-conclusion,
-'',
+    `🕒 Thời gian quét: ${vnTime()} (VN)`,
+    '',
+    conclusion,
+    ''
   ].join('\n');
 
   console.log(
@@ -73,11 +76,17 @@ conclusion,
               copy_text: {
                 text: coin
               }
+            }, 
+            {
+              text: '🤖 Phân tích Coin',
+              copy_text: {
+                text: cleanSymbol
+              }
             },
             {
               text: '📈 CoinGlass',
               url: chart
-            }
+            },
           ]
         ]
       }
@@ -93,4 +102,3 @@ conclusion,
     );
   }
 }
-
