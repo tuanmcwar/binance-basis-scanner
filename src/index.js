@@ -38,7 +38,7 @@ function getNextScanTime() {
   const now = Date.now();
 
   const HOUR_MS = 60 * 60 * 1000;
-  const OFFSET_MS = 2 * 60 * 1000;
+  const OFFSET_MS = 3 * 60 * 1000;
 
   const nextScan =
     Math.floor(now / HOUR_MS) * HOUR_MS +
